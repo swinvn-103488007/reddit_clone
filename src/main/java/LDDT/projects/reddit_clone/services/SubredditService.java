@@ -1,13 +1,20 @@
 package LDDT.projects.reddit_clone.services;
 
 import LDDT.projects.reddit_clone.dtos.SubredditDto;
+import LDDT.projects.reddit_clone.exceptions.SpringRedditException;
+import LDDT.projects.reddit_clone.mappers.SubredditMapper;
 import LDDT.projects.reddit_clone.model.Subreddit;
 import LDDT.projects.reddit_clone.repositories.SubredditRepository;
-import jakarta.transaction.Transactional;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor
@@ -15,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class SubredditService {
 
     private final SubredditRepository subredditRepository;
+    private final SubredditMapper subredditMapper;
     @Transactional
     public SubredditDto save(SubredditDto subredditDto) {
 
@@ -25,5 +33,19 @@ public class SubredditService {
         subredditRepository.save(save);
         subredditDto.setId(save.getId());
         return subredditDto;
+    }
+
+    @Transactional(readOnly = true)
+    public List<SubredditDto> getAll() {
+        return subredditRepository.findAll()
+                .stream()
+                .map(subredditMapper::mapSubredditToDto)
+                .collect(toList());
+    }
+
+    public SubredditDto getSubreddit(Long id) {
+        Subreddit subreddit = subredditRepository.findById(id)
+                .orElseThrow(() -> new SpringRedditException("No subreddit found with ID - " + id));
+        return subredditMapper.mapSubredditToDto(subreddit);
     }
 }
