@@ -32,6 +32,7 @@ public class SubredditService {
                 .build();
         subredditRepository.save(save);
         subredditDto.setId(save.getId());
+        subredditDto.setNumberOfPosts(0);
         return subredditDto;
     }
 
