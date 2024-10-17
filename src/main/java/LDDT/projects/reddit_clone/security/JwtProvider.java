@@ -1,6 +1,8 @@
 package LDDT.projects.reddit_clone.security;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -10,10 +12,14 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class JwtProvider {
     private final JwtEncoder jwtEncoder;
+
+    @Value("${jwt.expiration.time}")
+    private Long jwtExpirationInMillis;
+
     // Note: Using nimbus-jose-jwt.
     //  Other way: Using jjwt
     public String generateToken(Authentication authentication) {
@@ -25,10 +31,15 @@ public class JwtProvider {
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(Instant.now())
+                .expiresAt(Instant.now().plusMillis(jwtExpirationInMillis))
                 .subject(username)
                 .claim("scope", "ROLE_USER")
                 .build();
 
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public Long getJwtExpirationInMillis() {
+        return jwtExpirationInMillis;
     }
 }
