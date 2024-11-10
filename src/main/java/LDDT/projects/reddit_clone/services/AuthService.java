@@ -11,9 +11,7 @@ import LDDT.projects.reddit_clone.model.VerificationToken;
 import LDDT.projects.reddit_clone.repositories.UserRepository;
 import LDDT.projects.reddit_clone.repositories.VerificationTokenRepository;
 import LDDT.projects.reddit_clone.security.JwtProvider;
-
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

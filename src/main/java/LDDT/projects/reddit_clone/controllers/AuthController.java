@@ -8,7 +8,6 @@ import LDDT.projects.reddit_clone.services.AuthService;
 import LDDT.projects.reddit_clone.services.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +19,13 @@ import static org.springframework.http.HttpStatus.OK;
 public class AuthController {
     private final AuthService authService;
     private final RefreshTokenService refreshTokenService;
-    @PostMapping("signup")
-    public ResponseEntity<String> signUp(@RequestBody RegisterRequestDto registerRequest) {
+    @PostMapping("/signup")
+    public ResponseEntity<String> signUp(@RequestBody @Valid RegisterRequestDto registerRequest) {
         authService.signUp(registerRequest);
         return new ResponseEntity<>("User Registration Successful", OK);
     }
 
-    @GetMapping("accountVerification/{token}")
+    @GetMapping("/accountVerification/{token}")
     public ResponseEntity<String> verifyAccount(@PathVariable String token) {
         authService.verifyAccount(token);
         return new ResponseEntity<>("Account Activated Successfully", OK);

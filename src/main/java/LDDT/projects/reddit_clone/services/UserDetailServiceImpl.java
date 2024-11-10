@@ -2,7 +2,6 @@ package LDDT.projects.reddit_clone.services;
 
 import LDDT.projects.reddit_clone.model.User;
 import LDDT.projects.reddit_clone.repositories.UserRepository;
-
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

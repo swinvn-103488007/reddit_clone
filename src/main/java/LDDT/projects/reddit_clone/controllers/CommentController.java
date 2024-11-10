@@ -3,7 +3,6 @@ package LDDT.projects.reddit_clone.controllers;
 import LDDT.projects.reddit_clone.dtos.CommentsDto;
 import LDDT.projects.reddit_clone.services.CommentService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

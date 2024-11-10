@@ -1,4 +1,4 @@
-package LDDT.projects.reddit_clone.config;
+package LDDT.projects.reddit_clone.configuration;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -6,18 +6,15 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import jakarta.servlet.ServletContext;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -27,15 +24,14 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
-@Configuration
-@EnableWebSecurity
+@TestConfiguration
 @RequiredArgsConstructor
-public class SecurityConfig {
-
-    private final UserDetailsService userDetailsService;
+public class Configuration {
+//    private final UserDetailsService userDetailsService;
     @Value("${jwt.public.key}")
     private RSAPublicKey publicKey;
     @Value("${jwt.private.key}")
@@ -45,30 +41,23 @@ public class SecurityConfig {
         // String swaggerDocsPattern = "/" + servletContext.getContextPath() + "/swagger-ui.html";
         // System.out.println(swaggerDocsPattern);
         http
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(
-                authorize -> authorize
-                    .requestMatchers("/api/auth/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/subreddit").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/posts").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
-                    // .requestMatchers(swaggerDocsPattern).permitAll()
-                    .requestMatchers("/v3/api-docs/**", "/configuration/ui",
-                            "swagger-ui/**", "/swagger-resources/**", "/configuration/security",
-                            "/webjars/**", "/swagger-ui.html").permitAll()
-                    .anyRequest().authenticated()
-            )
-            .oauth2ResourceServer(oAuth2 -> oAuth2.jwt(Customizer.withDefaults()));
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(
+                        authorize -> authorize
+                                .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/subreddit").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/posts").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/posts/**").permitAll()
+                                // .requestMatchers(swaggerDocsPattern).permitAll()
+                                .requestMatchers("/v3/api-docs/**", "/configuration/ui",
+                                        "swagger-ui/**", "/swagger-resources/**", "/configuration/security",
+                                        "/webjars/**").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer(oAuth2 -> oAuth2.jwt(Customizer.withDefaults()));
         return http.build();
     }
 
-    // Note: Old way of creating AuthenticationManager
-//    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) {
-//        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-//    }
-
-    // Note: New way of creating AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
